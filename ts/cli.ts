@@ -4,6 +4,7 @@ import * as fs from "node:fs";
 import { compileSchema, compileSchemaJS } from "./js";
 import { compileSchemaTypeScript } from "./ts";
 import { compileSchemaCPP } from "./cpp";
+import { compileSchemaRust } from "./rust";
 import { Schema } from "./schema";
 import { encodeBinarySchema, decodeBinarySchema } from "./binary";
 import { prettyPrintSchema } from "./printer";
@@ -23,6 +24,7 @@ Options:
   --ts-guards           Generate type guard functions (use with --ts).
   --ts-no-input-types   Don't generate separate input types (use with --ts).
   --cpp [PATH]          Generate C++ code.
+  --rust [PATH]         Generate Rust code.
   --text [PATH]         Encode the schema as text.
   --binary [PATH]       Encode the schema as a binary blob.
   --root-type [NAME]    Set the root type for JSON.
@@ -35,6 +37,7 @@ Examples:
   zephyrc --schema test.zephyr --ts test.ts
   zephyrc --schema test.zephyr --ts test.ts --ts-readonly --ts-guards
   zephyrc --schema test.zephyr --cpp test.h
+  zephyrc --schema test.zephyr --rust test.rs
   zephyrc --schema test.zephyr --binary test.bzephyr
   zephyrc --schema test.zephyr --root-type Test --from-json buffer.json
   zephyrc --schema test.zephyr --root-type Test --to-json buffer.bin
@@ -68,6 +71,7 @@ function main(args: string[]): number {
     "--js": null,
     "--ts": null,
     "--cpp": null,
+    "--rust": null,
     "--binary": null,
     "--text": null,
     "--root-type": null,
@@ -168,6 +172,10 @@ function main(args: string[]): number {
 
   if (flags["--cpp"] !== null) {
     writeFileString(flags["--cpp"], compileSchemaCPP(parsed));
+  }
+
+  if (flags["--rust"] !== null) {
+    writeFileString(flags["--rust"], compileSchemaRust(parsed));
   }
 
   if (flags["--binary"] !== null) {

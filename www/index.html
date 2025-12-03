@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <style>
+<style>
       * {
         margin: 0;
         padding: 0;
@@ -19,141 +19,214 @@
 
       :root {
         --bg-primary: #ffffff;
-        --bg-secondary: #f8f9fa;
-        --bg-tertiary: #f1f3f4;
-        --bg-code: #f6f8fa;
-        --border: #e1e4e8;
-        --border-light: #eaecef;
-        --text-primary: #1a1a1a;
-        --text-secondary: #586069;
-        --text-tertiary: #6a737d;
-        --accent: #24292e;
-        --success: #2ea44f;
-        --highlight: #0366d6;
+        --bg-secondary: #fafbfc;
+        --bg-tertiary: #f3f4f6;
+        --bg-code: #f8f9fb;
+        --bg-dark: #18181b;
+        --border: #e5e7eb;
+        --border-light: #f0f1f3;
+        --text-primary: #111827;
+        --text-secondary: #4b5563;
+        --text-tertiary: #9ca3af;
+        --accent: #18181b;
+        --accent-hover: #27272a;
+        --success: #10b981;
+        --success-light: #d1fae5;
+        --highlight: #3b82f6;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 16px;
+        --radius-xl: 20px;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
+    body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: var(--bg-primary);
         color: var(--text-primary);
-        line-height: 1.6;
+        line-height: 1.7;
         -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-feature-settings: "cv11", "ss01";
+      }
+
+      /* Smooth scroll */
+      html {
+        scroll-behavior: smooth;
       }
 
       /* Header */
       header {
-        padding: 80px 40px;
+        padding: 100px 40px 80px;
         text-align: center;
-        background: linear-gradient(
-          180deg,
-          var(--bg-secondary) 0%,
-          var(--bg-primary) 100%
-        );
-        border-bottom: 1px solid var(--border-light);
+        background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        position: relative;
+        overflow: hidden;
+      }
+
+      header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        max-width: 1400px;
+        height: 100%;
+        background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.08), transparent);
+        pointer-events: none;
       }
 
       .logo {
-        font-size: 14px;
-        font-weight: 600;
-        letter-spacing: 3px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 4px;
         text-transform: uppercase;
         color: var(--text-tertiary);
-        margin-bottom: 24px;
+        margin-bottom: 28px;
+        position: relative;
       }
 
       h1 {
-        font-size: 48px;
-        font-weight: 700;
-        letter-spacing: -1px;
-        margin-bottom: 16px;
+        font-size: 56px;
+        font-weight: 800;
+        letter-spacing: -2px;
+        margin-bottom: 20px;
         color: var(--text-primary);
+        line-height: 1.1;
+        background: linear-gradient(135deg, var(--text-primary) 0%, #374151 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
       }
 
       .tagline {
-        font-size: 20px;
+        font-size: 19px;
         color: var(--text-secondary);
-        max-width: 600px;
-        margin: 0 auto 32px;
+        max-width: 560px;
+        margin: 0 auto 36px;
+        line-height: 1.6;
+        font-weight: 400;
       }
 
       .badges {
         display: flex;
         justify-content: center;
-        gap: 12px;
+        gap: 10px;
         flex-wrap: wrap;
       }
 
       .badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        background: var(--bg-tertiary);
+        gap: 7px;
+        padding: 10px 18px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
         border-radius: 100px;
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 13px;
+        font-weight: 600;
         color: var(--text-secondary);
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .badge:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
       }
 
       .badge.highlight {
         background: var(--accent);
+        border-color: var(--accent);
         color: white;
       }
 
+      .badge.highlight:hover {
+        background: var(--accent-hover);
+      }
+
       .badge svg {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
+        opacity: 0.9;
       }
 
       /* Stats Section */
       .stats-section {
-        padding: 80px 40px;
+        padding: 100px 40px;
         background: var(--bg-primary);
       }
 
       .section-title {
         text-align: center;
-        font-size: 32px;
-        font-weight: 700;
-        margin-bottom: 12px;
+        font-size: 36px;
+        font-weight: 800;
+        margin-bottom: 14px;
+        letter-spacing: -1px;
+        color: var(--text-primary);
       }
 
       .section-subtitle {
         text-align: center;
-        color: var(--text-secondary);
-        margin-bottom: 48px;
+        color: var(--text-tertiary);
+        margin-bottom: 56px;
         font-size: 16px;
+        font-weight: 400;
       }
 
       .stats-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
         max-width: 900px;
         margin: 0 auto;
       }
 
       .stat-card {
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
         padding: 32px 24px;
         text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--success), #34d399);
+        opacity: 0;
+        transition: var(--transition);
       }
 
       .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-xl);
+        border-color: transparent;
+      }
+
+      .stat-card:hover::before {
+        opacity: 1;
       }
 
       .stat-value {
-        font-size: 42px;
-        font-weight: 700;
+        font-size: 44px;
+        font-weight: 800;
         color: var(--text-primary);
         line-height: 1;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
+        letter-spacing: -2px;
       }
 
       .stat-value.positive {
@@ -161,17 +234,17 @@
       }
 
       .stat-label {
-        font-size: 14px;
-        color: var(--text-secondary);
+        font-size: 13px;
+        color: var(--text-tertiary);
         font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
 
       /* Benchmark Section */
       .benchmark-section {
-        padding: 80px 40px;
+        padding: 100px 40px;
         background: var(--bg-secondary);
-        border-top: 1px solid var(--border-light);
-        border-bottom: 1px solid var(--border-light);
       }
 
       .benchmark-container {
@@ -181,58 +254,66 @@
 
       .benchmark-table {
         width: 100%;
-        border-collapse: collapse;
+        border-collapse: separate;
+        border-spacing: 0;
         background: var(--bg-primary);
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
         overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border);
       }
 
       .benchmark-table th,
       .benchmark-table td {
-        padding: 16px 20px;
+        padding: 18px 24px;
         text-align: left;
         border-bottom: 1px solid var(--border-light);
       }
 
       .benchmark-table th {
-        background: var(--bg-tertiary);
-        font-weight: 600;
-        font-size: 12px;
+        background: var(--bg-secondary);
+        font-weight: 700;
+        font-size: 11px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-secondary);
+        letter-spacing: 0.8px;
+        color: var(--text-tertiary);
       }
 
       .benchmark-table td {
         font-family: "JetBrains Mono", monospace;
-        font-size: 14px;
+        font-size: 13px;
+        font-weight: 500;
       }
 
       .benchmark-table tr:last-child td {
         border-bottom: none;
       }
 
-      .benchmark-table tr:hover td {
+      .benchmark-table tbody tr {
+        transition: var(--transition);
+      }
+
+      .benchmark-table tbody tr:hover td {
         background: var(--bg-secondary);
       }
 
       .test-name {
         font-family: "Inter", sans-serif;
-        font-weight: 600;
+        font-weight: 700;
+        color: var(--text-primary);
       }
 
       .comparison {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
       }
 
       .bar-container {
         flex: 1;
-        height: 8px;
+        height: 6px;
         background: var(--bg-tertiary);
-        border-radius: 4px;
+        border-radius: 3px;
         overflow: hidden;
         min-width: 80px;
       }
@@ -240,18 +321,18 @@
       .bar {
         height: 100%;
         background: var(--accent);
-        border-radius: 4px;
-        transition: width 0.3s ease;
+        border-radius: 3px;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
       .bar.zephyr {
-        background: var(--success);
+        background: linear-gradient(90deg, var(--success), #34d399);
       }
 
       .percentage {
-        font-size: 13px;
-        font-weight: 500;
-        min-width: 60px;
+        font-size: 12px;
+        font-weight: 700;
+        min-width: 55px;
         text-align: right;
       }
 
@@ -265,17 +346,17 @@
 
       .winner-badge {
         display: inline-block;
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-size: 11px;
-        font-weight: 600;
+        padding: 5px 12px;
+        border-radius: var(--radius-sm);
+        font-size: 10px;
+        font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
       }
 
       .winner-badge.zephyr {
-        background: rgba(46, 164, 79, 0.1);
-        color: var(--success);
+        background: var(--success-light);
+        color: #047857;
       }
 
       .winner-badge.kiwi {
@@ -290,7 +371,7 @@
 
       /* Demo Section */
       .demo-section {
-        padding: 80px 40px;
+        padding: 100px 40px;
         background: var(--bg-primary);
       }
 
@@ -302,8 +383,8 @@
       .demo-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 24px;
+        gap: 20px;
+        margin-bottom: 20px;
       }
 
       @media (max-width: 900px) {
@@ -313,50 +394,60 @@
       }
 
       .demo-panel {
-        background: var(--bg-secondary);
+        background: var(--bg-primary);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
         overflow: hidden;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+      }
+
+      .demo-panel:focus-within {
+        box-shadow: var(--shadow-lg);
+        border-color: var(--text-tertiary);
       }
 
       .demo-panel-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 12px 16px;
-        background: var(--bg-tertiary);
-        border-bottom: 1px solid var(--border);
+        padding: 14px 18px;
+        background: var(--bg-secondary);
+        border-bottom: 1px solid var(--border-light);
       }
 
       .demo-panel-title {
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-secondary);
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-tertiary);
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
       }
 
       .demo-panel-info {
         font-family: "JetBrains Mono", monospace;
-        font-size: 12px;
+        font-size: 11px;
         color: var(--text-tertiary);
-      }
+        font-weight: 500;
+  }
 
-      textarea {
-        width: 100%;
+  textarea {
+    width: 100%;
         min-height: 280px;
-        padding: 16px;
+        padding: 18px;
         border: none;
-        resize: vertical;
+    resize: vertical;
         font-family: "JetBrains Mono", monospace;
         font-size: 13px;
-        line-height: 1.6;
+        line-height: 1.7;
         color: var(--text-primary);
         background: var(--bg-primary);
-      }
+        transition: var(--transition);
+  }
 
-      textarea:focus {
-        outline: none;
+  textarea:focus {
+    outline: none;
+        background: var(--bg-primary);
       }
 
       textarea::placeholder {
@@ -371,60 +462,70 @@
 
       /* Features Section */
       .features-section {
-        padding: 80px 40px;
+        padding: 100px 40px;
         background: var(--bg-secondary);
-        border-top: 1px solid var(--border-light);
       }
 
       .features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
         max-width: 1000px;
         margin: 0 auto;
       }
 
       .feature-card {
         background: var(--bg-primary);
-        border: 1px solid var(--border-light);
-        border-radius: 12px;
-        padding: 28px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        padding: 32px;
+        transition: var(--transition);
+    position: relative;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: transparent;
       }
 
       .feature-icon {
-        width: 40px;
-        height: 40px;
-        background: var(--bg-tertiary);
-        border-radius: 10px;
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-bottom: 16px;
+        margin-bottom: 20px;
+        border: 1px solid var(--border-light);
       }
 
       .feature-icon svg {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
         color: var(--text-secondary);
       }
 
       .feature-title {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 8px;
+        font-size: 17px;
+        font-weight: 700;
+        margin-bottom: 10px;
+        color: var(--text-primary);
       }
 
       .feature-desc {
         font-size: 14px;
         color: var(--text-secondary);
-        line-height: 1.5;
+        line-height: 1.6;
       }
 
       /* Footer */
       footer {
-        padding: 40px;
+        padding: 48px 40px;
         text-align: center;
-        border-top: 1px solid var(--border-light);
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border);
         color: var(--text-tertiary);
         font-size: 14px;
       }
@@ -432,43 +533,429 @@
       footer a {
         color: var(--text-secondary);
         text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
       }
 
       footer a:hover {
-        text-decoration: underline;
+        color: var(--text-primary);
       }
 
       /* Run Benchmark Button */
       .run-benchmark {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
+        gap: 10px;
+        padding: 14px 28px;
         background: var(--accent);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
-        transition: background 0.2s;
-        margin-top: 24px;
+        transition: var(--transition);
+        margin-top: 28px;
+        box-shadow: var(--shadow-md);
       }
 
       .run-benchmark:hover {
-        background: #333;
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .run-benchmark:active {
+        transform: translateY(0);
       }
 
       .run-benchmark:disabled {
         background: var(--text-tertiary);
         cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
       }
 
       .benchmark-note {
         text-align: center;
         color: var(--text-tertiary);
         font-size: 13px;
-        margin-top: 16px;
+        margin-top: 18px;
+        font-weight: 400;
+      }
+
+      /* ==================== RESPONSIVE STYLES ==================== */
+
+      /* Large tablet */
+      @media (max-width: 1024px) {
+        header {
+          padding: 80px 24px 60px;
+        }
+
+        h1 {
+          font-size: 44px;
+        }
+
+        .tagline {
+          font-size: 17px;
+        }
+
+        .section-title {
+          font-size: 32px;
+        }
+
+        .stats-section,
+        .benchmark-section,
+        .demo-section,
+        .features-section {
+          padding: 80px 24px;
+        }
+
+        .stat-value {
+          font-size: 38px;
+        }
+
+        .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Tablet */
+      @media (max-width: 768px) {
+        header {
+          padding: 60px 20px 48px;
+        }
+
+        header::before {
+          display: none;
+        }
+
+        h1 {
+          font-size: 32px;
+          letter-spacing: -1px;
+        }
+
+        .tagline {
+          font-size: 15px;
+          margin-bottom: 28px;
+        }
+
+        .badges {
+          gap: 8px;
+        }
+
+        .badge {
+          padding: 8px 14px;
+          font-size: 12px;
+        }
+
+        .badge svg {
+          width: 14px;
+          height: 14px;
+        }
+
+        .section-title {
+          font-size: 26px;
+          letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+          font-size: 14px;
+          margin-bottom: 40px;
+        }
+
+        .stats-section,
+        .benchmark-section,
+        .demo-section,
+        .features-section {
+          padding: 60px 20px;
+        }
+
+        .stats-grid {
+          gap: 12px;
+        }
+
+        .stat-card {
+          padding: 24px 16px;
+          border-radius: var(--radius-md);
+        }
+
+        .stat-card::before {
+          height: 2px;
+        }
+
+        .stat-value {
+          font-size: 32px;
+          letter-spacing: -1px;
+        }
+
+        .stat-label {
+          font-size: 11px;
+        }
+
+        /* Benchmark table - horizontal scroll */
+        .benchmark-table {
+          display: block;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          border-radius: var(--radius-md);
+        }
+
+        .benchmark-table th,
+        .benchmark-table td {
+          padding: 14px 16px;
+          font-size: 12px;
+          white-space: nowrap;
+        }
+
+        .comparison {
+          gap: 8px;
+        }
+
+        .percentage {
+          font-size: 11px;
+        }
+
+        /* Demo section */
+        .demo-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .demo-panel {
+          border-radius: var(--radius-md);
+        }
+
+        textarea {
+          min-height: 220px;
+          font-size: 12px;
+          padding: 14px;
+          line-height: 1.6;
+        }
+
+        .log-panel textarea {
+          min-height: 80px;
+        }
+
+        .demo-panel-header {
+          padding: 12px 14px;
+        }
+
+        .demo-panel-title {
+          font-size: 10px;
+          letter-spacing: 0.8px;
+        }
+
+        .demo-panel-info {
+          font-size: 10px;
+        }
+
+        /* Features grid */
+        .features-grid {
+          grid-template-columns: 1fr;
+          gap: 14px;
+        }
+
+        .feature-card {
+          padding: 24px;
+          border-radius: var(--radius-md);
+        }
+
+        .feature-icon {
+          width: 44px;
+          height: 44px;
+          margin-bottom: 16px;
+        }
+
+        .feature-icon svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .feature-title {
+          font-size: 16px;
+        }
+
+        .feature-desc {
+          font-size: 13px;
+        }
+
+        /* Run benchmark button */
+        .run-benchmark {
+          padding: 12px 24px;
+          font-size: 13px;
+          border-radius: var(--radius-sm);
+        }
+
+        /* Footer */
+        footer {
+          padding: 32px 20px;
+          font-size: 13px;
+        }
+      }
+
+      /* Mobile */
+      @media (max-width: 480px) {
+        header {
+          padding: 48px 16px 40px;
+        }
+
+        h1 {
+          font-size: 26px;
+          letter-spacing: -0.5px;
+        }
+
+        .tagline {
+          font-size: 14px;
+          line-height: 1.5;
+        }
+
+        .logo {
+          font-size: 11px;
+          letter-spacing: 3px;
+          margin-bottom: 20px;
+        }
+
+        .badges {
+          gap: 6px;
+        }
+
+        .badge {
+          padding: 7px 12px;
+          font-size: 11px;
+        }
+
+        .stats-grid {
+          gap: 10px;
+        }
+
+        .stat-card {
+          padding: 20px 12px;
+        }
+
+        .stat-value {
+          font-size: 26px;
+        }
+
+        .stat-label {
+          font-size: 10px;
+        }
+
+        .section-title {
+          font-size: 22px;
+        }
+
+        .section-subtitle {
+          font-size: 13px;
+          margin-bottom: 32px;
+        }
+
+        .stats-section,
+        .benchmark-section,
+        .demo-section,
+        .features-section {
+          padding: 48px 16px;
+        }
+
+        textarea {
+          min-height: 180px;
+          font-size: 11px;
+          padding: 12px;
+        }
+
+        .benchmark-table th,
+        .benchmark-table td {
+          padding: 12px;
+          font-size: 11px;
+        }
+
+        .winner-badge {
+          padding: 4px 8px;
+          font-size: 9px;
+        }
+
+        footer {
+          padding: 24px 16px;
+          font-size: 12px;
+        }
+      }
+
+      /* Responsive inline sections */
+      @media (max-width: 900px) {
+        /* TypeScript comparison - stack columns */
+        .typescript-section [style*="grid-template-columns: 1fr 1fr"] {
+          grid-template-columns: 1fr !important;
+          gap: 24px !important;
+        }
+
+        /* Multi-language cards */
+        [style*="grid-template-columns: repeat(auto-fit, minmax(350px, 1fr))"] {
+          grid-template-columns: 1fr !important;
+        }
+
+        [style*="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"] {
+          grid-template-columns: 1fr !important;
+        }
+
+        [style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+
+        /* Section padding */
+        [style*="padding: 80px 40px"] {
+          padding: 60px 20px !important;
+        }
+      }
+
+      @media (max-width: 600px) {
+        [style*="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"] {
+          grid-template-columns: 1fr !important;
+        }
+
+        /* Comparison tables - horizontal scroll */
+        [style*="border-radius: 12px; overflow: hidden"] table {
+          display: block;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+
+        [style*="border-radius: 12px; overflow: hidden"] th,
+        [style*="border-radius: 12px; overflow: hidden"] td {
+          white-space: nowrap;
+          font-size: 11px !important;
+          padding: 10px 12px !important;
+        }
+
+        /* Code blocks */
+        pre[style*="font-size: 13px"],
+        pre[style*="font-size: 12px"],
+        pre[style*="font-size: 11px"] {
+          font-size: 10px !important;
+          padding: 12px !important;
+          border-radius: 8px !important;
+        }
+
+        /* Inline section titles */
+        [style*="font-size: 18px"] {
+          font-size: 15px !important;
+        }
+
+        /* Section padding */
+        [style*="padding: 80px 40px"] {
+          padding: 48px 16px !important;
+        }
+
+        [style*="padding: 24px"] {
+          padding: 16px !important;
+        }
+
+        [style*="gap: 24px"] {
+          gap: 14px !important;
+        }
+
+        [style*="margin-top: 48px"] {
+          margin-top: 32px !important;
+        }
       }
     </style>
   </head>
@@ -526,10 +1013,117 @@
           >
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
-          Full TypeScript
+          TypeScript + Rust + C++
         </span>
       </div>
     </header>
+
+    <section class="demo-section">
+      <div class="demo-container">
+        <h2 class="section-title">Try It Now</h2>
+        <p class="section-subtitle">
+          Edit the JSON or schema to see real-time binary encoding
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">JSON Input</span>
+              <span class="demo-panel-info" id="json-size">— bytes</span>
+            </div>
+    <textarea
+      id="json"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    >
+{
+  "id": 42,
+  "username": "pixel_warrior",
+  "class": "MAGE",
+  "level": 85,
+  "health": 2450,
+  "position": { "x": 127.5, "y": 89.3 },
+  "inventory": ["sword", "potion", "shield"],
+  "achievements": [true, true, false, true, false],
+  "stats": { "strength": 45, "agility": 72, "magic": 98 }
+}</textarea
+            >
+          </div>
+
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Binary Output</span>
+              <span class="demo-panel-info" id="binary-size">— bytes</span>
+            </div>
+    <textarea
+      id="binary"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+              placeholder="Encoded binary will appear here..."
+    ></textarea>
+          </div>
+        </div>
+
+        <div class="demo-grid">
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Schema</span>
+            </div>
+    <textarea
+      id="schema"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    >
+enum PlayerClass {
+  WARRIOR = 0;
+  MAGE = 1;
+  ROGUE = 2;
+  HEALER = 3;
+}
+
+struct Position {
+  float x;
+  float y;
+}
+
+message Player {
+  uint id = 1;
+  string username = 2;
+  PlayerClass class = 3;
+  uint level = 4;
+  uint health = 5;
+  Position position = 6;
+  string[] inventory = 7;
+  bool[] achievements = 8;
+  map<string, int> stats = 9;
+}</textarea
+            >
+          </div>
+
+          <div class="demo-panel log-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Log</span>
+            </div>
+    <textarea
+      id="log"
+      readonly
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    >
+Ready</textarea
+    >
+          </div>
+        </div>
+      </div>
+  </section>
 
     <section class="stats-section">
       <h2 class="section-title">Performance at a Glance</h2>
@@ -605,8 +1199,112 @@
           </button>
         </div>
         <p class="benchmark-note">
-          Runs 50,000 iterations × 3 rounds with JIT warmup for accurate results
+          Runs 10,000 iterations with JIT warmup for accurate results
         </p>
+
+        <div
+          style="
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+          "
+        >
+          <div
+            style="
+              background: rgba(46, 164, 79, 0.08);
+              border: 1px solid rgba(46, 164, 79, 0.2);
+              border-radius: 8px;
+              padding: 16px;
+            "
+          >
+            <div
+              style="
+                font-weight: 600;
+                color: var(--success);
+                margin-bottom: 4px;
+              "
+            >
+              🎯 Sequential Numbers
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary)">
+              Delta encoding compresses sorted/sequential data by
+              <strong>50%</strong>
+            </div>
+          </div>
+          <div
+            style="
+              background: rgba(46, 164, 79, 0.08);
+              border: 1px solid rgba(46, 164, 79, 0.2);
+              border-radius: 8px;
+              padding: 16px;
+            "
+          >
+            <div
+              style="
+                font-weight: 600;
+                color: var(--success);
+                margin-bottom: 4px;
+              "
+            >
+              🎯 Boolean Arrays
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary)">
+              Bit packing stores 8 bools per byte — <strong>84% smaller</strong>
+            </div>
+          </div>
+          <div
+            style="
+              background: rgba(46, 164, 79, 0.08);
+              border: 1px solid rgba(46, 164, 79, 0.2);
+              border-radius: 8px;
+              padding: 16px;
+            "
+          >
+            <div
+              style="
+                font-weight: 600;
+                color: var(--success);
+                margin-bottom: 4px;
+              "
+            >
+              🎯 Half-Precision Floats
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary)">
+              float16 type cuts storage in half — <strong>50% smaller</strong>
+            </div>
+          </div>
+          <div
+            style="
+              background: rgba(46, 164, 79, 0.08);
+              border: 1px solid rgba(46, 164, 79, 0.2);
+              border-radius: 8px;
+              padding: 16px;
+            "
+          >
+            <div
+              style="
+                font-weight: 600;
+                color: var(--success);
+                margin-bottom: 4px;
+              "
+            >
+              🎯 Native Maps
+            </div>
+            <div style="font-size: 13px; color: var(--text-secondary)">
+              First-class
+              <code
+                style="
+                  background: var(--bg-tertiary);
+                  padding: 1px 4px;
+                  border-radius: 3px;
+                "
+                >map&lt;K,V&gt;</code
+              >
+              — Kiwi doesn't have this!
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1166,100 +1864,389 @@ StatusValues.ACTIVE  <span style="color: #6a737d;">// → 1</span></code></pre>
       </div>
     </section>
 
-    <section class="demo-section">
-      <div class="demo-container">
-        <h2 class="section-title">Interactive Demo</h2>
+    <!-- Multi-Language Support Section -->
+    <section
+      style="
+        padding: 80px 40px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-light);
+      "
+    >
+      <div style="max-width: 1200px; margin: 0 auto">
+        <h2 class="section-title">Multi-Language Code Generation</h2>
         <p class="section-subtitle">
-          Edit JSON or schema to see real-time encoding
+          Generate native, type-safe code for your stack
         </p>
 
-        <div class="demo-grid">
-          <div class="demo-panel">
-            <div class="demo-panel-header">
-              <span class="demo-panel-title">JSON Input</span>
-              <span class="demo-panel-info" id="json-size">— bytes</span>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+          "
+        >
+          <!-- TypeScript -->
+          <div
+            style="
+              background: var(--bg-primary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+              "
+            >
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: #3178c6;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                  font-weight: bold;
+                  font-size: 14px;
+                "
+              >
+                TS
+              </div>
+              <div>
+                <h3 style="font-size: 18px; font-weight: 600; margin: 0">
+                  TypeScript
+                </h3>
+                <span style="font-size: 12px; color: var(--text-tertiary)"
+                  >Full type safety</span
+                >
+              </div>
             </div>
-            <textarea
-              id="json"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-            >
-{
-  "clientID": 100,
-  "type": "POINTED",
-  "colors": [
-    { "red": 255, "green": 127, "blue": 0, "alpha": 255 }
-  ]
-}</textarea
-            >
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 11px;
+                margin: 0;
+                overflow-x: auto;
+              "
+            ><code>zephyrc --schema user.zephyr --ts user.ts
+
+<span style="color: #6a737d;">// Generated with full types</span>
+<span style="color: #d73a49;">export interface</span> User {
+  id?: <span style="color: #005cc5;">number</span>;
+  name?: <span style="color: #005cc5;">string</span>;
+}</code></pre>
           </div>
 
-          <div class="demo-panel">
-            <div class="demo-panel-header">
-              <span class="demo-panel-title">Binary Output</span>
-              <span class="demo-panel-info" id="binary-size">— bytes</span>
+          <!-- Rust -->
+          <div
+            style="
+              background: var(--bg-primary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+              "
+            >
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: #dea584;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: #1a1a1a;
+                  font-weight: bold;
+                  font-size: 14px;
+                "
+              >
+                🦀
+              </div>
+              <div>
+                <h3 style="font-size: 18px; font-weight: 600; margin: 0">
+                  Rust
+                </h3>
+                <span style="font-size: 12px; color: var(--text-tertiary)"
+                  >Zero-cost abstractions</span
+                >
+              </div>
             </div>
-            <textarea
-              id="binary"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-              placeholder="Encoded binary will appear here..."
-            ></textarea>
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 11px;
+                margin: 0;
+                overflow-x: auto;
+              "
+            ><code>zephyrc --schema user.zephyr --rust user.rs
+
+<span style="color: #6a737d;">// Serde + builder pattern</span>
+<span style="color: #d73a49;">#[derive(Serialize, Deserialize)]</span>
+<span style="color: #d73a49;">pub struct</span> User {
+    <span style="color: #d73a49;">pub</span> id: Option&lt;u32&gt;,
+}</code></pre>
+          </div>
+
+          <!-- C++ -->
+          <div
+            style="
+              background: var(--bg-primary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+              "
+            >
+              <div
+                style="
+                  width: 40px;
+                  height: 40px;
+                  background: #00599c;
+                  border-radius: 8px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                  font-weight: bold;
+                  font-size: 12px;
+                "
+              >
+                C++
+              </div>
+              <div>
+                <h3 style="font-size: 18px; font-weight: 600; margin: 0">
+                  C++
+                </h3>
+                <span style="font-size: 12px; color: var(--text-tertiary)"
+                  >High performance</span
+                >
+              </div>
+            </div>
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 11px;
+                margin: 0;
+                overflow-x: auto;
+              "
+            ><code>zephyrc --schema user.zephyr --cpp user.h
+
+<span style="color: #6a737d;">// Header-only library</span>
+<span style="color: #d73a49;">class</span> User {
+<span style="color: #d73a49;">public:</span>
+    uint32_t *id();
+};</code></pre>
           </div>
         </div>
 
-        <div class="demo-grid">
-          <div class="demo-panel">
-            <div class="demo-panel-header">
-              <span class="demo-panel-title">Schema</span>
-            </div>
-            <textarea
-              id="schema"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-            >
-enum Type {
-  FLAT = 0;
-  ROUND = 1;
-  POINTED = 2;
-}
-
-struct Color {
-  byte red;
-  byte green;
-  byte blue;
-  byte alpha;
-}
-
-message Example {
-  uint clientID = 1;
-  Type type = 2;
-  Color[] colors = 3;
-}</textarea
-            >
-          </div>
-
-          <div class="demo-panel log-panel">
-            <div class="demo-panel-header">
-              <span class="demo-panel-title">Log</span>
-            </div>
-            <textarea
-              id="log"
-              readonly
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-            >
-Ready</textarea
-            >
-          </div>
+        <!-- Language comparison table -->
+        <div
+          style="
+            margin-top: 48px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+          "
+        >
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="background: var(--bg-tertiary)">
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: left;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                  "
+                >
+                  Feature
+                </th>
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-tertiary);
+                    font-weight: 600;
+                  "
+                >
+                  Kiwi
+                </th>
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                  "
+                >
+                  Zephyr
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  TypeScript code generation
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✓ Basic
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓ Full (guards, input types)
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Rust code generation
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗ Runtime only
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓ Typed + Serde + Builder
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  C++ code generation
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✓
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  JavaScript code generation
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✓
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Native Map support
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓ map&lt;K,V&gt;
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -1401,41 +2388,41 @@ Ready</textarea
 
     <script src="zephyr.js"></script>
     <script>
-      const json = document.getElementById("json");
-      const binary = document.getElementById("binary");
-      const schema = document.getElementById("schema");
-      const log = document.getElementById("log");
+  const json = document.getElementById("json");
+  const binary = document.getElementById("binary");
+  const schema = document.getElementById("schema");
+  const log = document.getElementById("log");
       const jsonSize = document.getElementById("json-size");
       const binarySize = document.getElementById("binary-size");
 
-      function toHex(value) {
-        return Array.prototype.map
+  function toHex(value) {
+    return Array.prototype.map
           .call(value, (x) => (0x100 | x).toString(16).slice(-2))
-          .join(" ");
-      }
+      .join(" ");
+  }
 
-      function fromHex(value) {
-        return new Uint8Array(
+  function fromHex(value) {
+    return new Uint8Array(
           value.split(/[\s,]+/g).map((x) => ("0x" + x) | 0)
-        );
-      }
+    );
+  }
 
-      function update() {
-        try {
+  function update() {
+    try {
           const compiled = zephyr.compileSchema(
             zephyr.parseSchema(schema.value)
           );
-          const parts = schema.value.split(/\b(?:message|struct)\s+(\w+)\b/g);
+      const parts = schema.value.split(/\b(?:message|struct)\s+(\w+)\b/g);
 
-          if (parts.length < 2) {
-            throw new Error("No message or struct found");
-          }
+      if (parts.length < 2) {
+        throw new Error("No message or struct found");
+      }
 
-          const name = parts[parts.length - 2];
+      const name = parts[parts.length - 2];
 
           if (document.activeElement === binary) {
             const decoded = compiled["decode" + name](fromHex(binary.value));
-            const replacer = (k, v) => (typeof v === "bigint" ? "" + v : v);
+        const replacer = (k, v) => (typeof v === "bigint" ? "" + v : v);
             json.value = JSON.stringify(decoded, replacer, 2);
             jsonSize.textContent =
               new TextEncoder().encode(json.value).length + " bytes";
@@ -1451,14 +2438,19 @@ Ready</textarea
           }
 
           log.value = "✓ Success";
-        } catch (e) {
+    } catch (e) {
           log.value = "✗ " + e.message;
         }
       }
 
-      json.oninput = binary.oninput = schema.oninput = update;
+  json.oninput = binary.oninput = schema.oninput = update;
       json.onfocus = binary.onfocus = schema.onfocus = update;
-      update();
+
+      // Prettify JSON on initial load
+      try {
+        json.value = JSON.stringify(JSON.parse(json.value), null, 2);
+      } catch (e) {}
+  update();
 
       // Benchmark functionality
       const benchmarkData = {
@@ -1718,6 +2710,6 @@ Ready</textarea
       setTimeout(() => {
         document.getElementById("run-benchmark").click();
       }, 500);
-    </script>
+</script>
   </body>
 </html>

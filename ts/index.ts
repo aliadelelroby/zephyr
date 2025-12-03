@@ -9,3 +9,5 @@ export { prettyPrintSchema } from "./printer";
 export { encodeBinarySchema, decodeBinarySchema } from "./binary";
 export { compileSchema, compileSchemaJS } from "./js";
 export { compileSchemaTypeScript } from "./ts";
+export { compileSchemaCPP } from "./cpp";
+export { compileSchemaRust } from "./rust";
