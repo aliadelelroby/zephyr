@@ -1,0 +1,54 @@
+{
+  "name": "zephyr-schema",
+  "version": "0.1.0",
+  "description": "High-performance binary serialization protocol - faster and smaller than Kiwi",
+  "main": "zephyr.js",
+  "types": "dist/zephyr.d.ts",
+  "bin": {
+    "zephyrc": "cli.js"
+  },
+  "exports": {
+    ".": {
+      "import": "./zephyr-esm.js",
+      "require": "./zephyr.js",
+      "types": "./dist/zephyr.d.ts"
+    }
+  },
+  "files": [
+    "zephyr.js",
+    "zephyr-esm.js",
+    "cli.js",
+    "dist/**/*.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "build:cjs": "esbuild --target=es6 --bundle cli.ts zephyr.ts --platform=node --outdir=.",
+    "build:esm": "esbuild --target=es6 --bundle zephyr.ts --platform=node --format=esm --outfile=zephyr-esm.js",
+    "build:browser": "esbuild --target=es6 --bundle browser.ts --platform=browser --global-name=zephyr --outfile=../www/zephyr.js",
+    "build:all": "npm run build && npm run build:cjs && npm run build:esm && npm run build:browser",
+    "prepublishOnly": "npm run build:all",
+    "test": "node ../test/test.js"
+  },
+  "keywords": [
+    "binary",
+    "serialization",
+    "protocol",
+    "schema",
+    "encoding",
+    "typescript",
+    "kiwi",
+    "protobuf"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aliadelelroby/zephyr"
+  },
+  "homepage": "https://github.com/aliadelelroby/zephyr#readme",
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "esbuild": "^0.27.0",
+    "typescript": "^5.0.0"
+  }
+}
