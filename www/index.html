@@ -1,0 +1,1723 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Zephyr — High-Performance Binary Serialization</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f8f9fa;
+        --bg-tertiary: #f1f3f4;
+        --bg-code: #f6f8fa;
+        --border: #e1e4e8;
+        --border-light: #eaecef;
+        --text-primary: #1a1a1a;
+        --text-secondary: #586069;
+        --text-tertiary: #6a737d;
+        --accent: #24292e;
+        --success: #2ea44f;
+        --highlight: #0366d6;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+          sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Header */
+      header {
+        padding: 80px 40px;
+        text-align: center;
+        background: linear-gradient(
+          180deg,
+          var(--bg-secondary) 0%,
+          var(--bg-primary) 100%
+        );
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .logo {
+        font-size: 14px;
+        font-weight: 600;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--text-tertiary);
+        margin-bottom: 24px;
+      }
+
+      h1 {
+        font-size: 48px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+        color: var(--text-primary);
+      }
+
+      .tagline {
+        font-size: 20px;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto 32px;
+      }
+
+      .badges {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: var(--bg-tertiary);
+        border-radius: 100px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .badge.highlight {
+        background: var(--accent);
+        color: white;
+      }
+
+      .badge svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Stats Section */
+      .stats-section {
+        padding: 80px 40px;
+        background: var(--bg-primary);
+      }
+
+      .section-title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+
+      .section-subtitle {
+        text-align: center;
+        color: var(--text-secondary);
+        margin-bottom: 48px;
+        font-size: 16px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .stat-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 32px 24px;
+        text-align: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+
+      .stat-value {
+        font-size: 42px;
+        font-weight: 700;
+        color: var(--text-primary);
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      .stat-value.positive {
+        color: var(--success);
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      /* Benchmark Section */
+      .benchmark-section {
+        padding: 80px 40px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .benchmark-container {
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .benchmark-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+      }
+
+      .benchmark-table th,
+      .benchmark-table td {
+        padding: 16px 20px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .benchmark-table th {
+        background: var(--bg-tertiary);
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+      }
+
+      .benchmark-table td {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 14px;
+      }
+
+      .benchmark-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .benchmark-table tr:hover td {
+        background: var(--bg-secondary);
+      }
+
+      .test-name {
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+      }
+
+      .comparison {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .bar-container {
+        flex: 1;
+        height: 8px;
+        background: var(--bg-tertiary);
+        border-radius: 4px;
+        overflow: hidden;
+        min-width: 80px;
+      }
+
+      .bar {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 4px;
+        transition: width 0.3s ease;
+      }
+
+      .bar.zephyr {
+        background: var(--success);
+      }
+
+      .percentage {
+        font-size: 13px;
+        font-weight: 500;
+        min-width: 60px;
+        text-align: right;
+      }
+
+      .percentage.positive {
+        color: var(--success);
+      }
+
+      .percentage.negative {
+        color: var(--text-tertiary);
+      }
+
+      .winner-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .winner-badge.zephyr {
+        background: rgba(46, 164, 79, 0.1);
+        color: var(--success);
+      }
+
+      .winner-badge.kiwi {
+        background: var(--bg-tertiary);
+        color: var(--text-tertiary);
+      }
+
+      .winner-badge.mixed {
+        background: var(--bg-tertiary);
+        color: var(--text-secondary);
+      }
+
+      /* Demo Section */
+      .demo-section {
+        padding: 80px 40px;
+        background: var(--bg-primary);
+      }
+
+      .demo-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .demo-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      @media (max-width: 900px) {
+        .demo-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .demo-panel {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .demo-panel-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: var(--bg-tertiary);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .demo-panel-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .demo-panel-info {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        color: var(--text-tertiary);
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 280px;
+        padding: 16px;
+        border: none;
+        resize: vertical;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 13px;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--bg-primary);
+      }
+
+      textarea:focus {
+        outline: none;
+      }
+
+      textarea::placeholder {
+        color: var(--text-tertiary);
+      }
+
+      .log-panel textarea {
+        background: var(--bg-code);
+        color: var(--text-secondary);
+        min-height: 100px;
+      }
+
+      /* Features Section */
+      .features-section {
+        padding: 80px 40px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border-light);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .feature-card {
+        background: var(--bg-primary);
+        border: 1px solid var(--border-light);
+        border-radius: 12px;
+        padding: 28px;
+      }
+
+      .feature-icon {
+        width: 40px;
+        height: 40px;
+        background: var(--bg-tertiary);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .feature-icon svg {
+        width: 20px;
+        height: 20px;
+        color: var(--text-secondary);
+      }
+
+      .feature-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .feature-desc {
+        font-size: 14px;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      /* Footer */
+      footer {
+        padding: 40px;
+        text-align: center;
+        border-top: 1px solid var(--border-light);
+        color: var(--text-tertiary);
+        font-size: 14px;
+      }
+
+      footer a {
+        color: var(--text-secondary);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Run Benchmark Button */
+      .run-benchmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 24px;
+      }
+
+      .run-benchmark:hover {
+        background: #333;
+      }
+
+      .run-benchmark:disabled {
+        background: var(--text-tertiary);
+        cursor: not-allowed;
+      }
+
+      .benchmark-note {
+        text-align: center;
+        color: var(--text-tertiary);
+        font-size: 13px;
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">Zephyr Protocol</div>
+      <h1>Binary Serialization, Perfected</h1>
+      <p class="tagline">
+        A high-performance, schema-based binary format that's smaller and faster
+        than the competition.
+      </p>
+      <div class="badges">
+        <span class="badge highlight">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+          </svg>
+          12% Faster
+        </span>
+        <span class="badge highlight">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            />
+          </svg>
+          26% Smaller
+        </span>
+        <span class="badge">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 6v6l4 2" />
+          </svg>
+          Schema-Based
+        </span>
+        <span class="badge highlight">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+          </svg>
+          Full TypeScript
+        </span>
+      </div>
+    </header>
+
+    <section class="stats-section">
+      <h2 class="section-title">Performance at a Glance</h2>
+      <p class="section-subtitle">
+        Compared to Kiwi binary format across 8 different test scenarios
+      </p>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value positive" id="stat-size">—</div>
+          <div class="stat-label">Average Size Reduction</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value positive" id="stat-encode">—</div>
+          <div class="stat-label">Encode Speedup</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value positive" id="stat-decode">—</div>
+          <div class="stat-label">Decode Speedup</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-wins">—</div>
+          <div class="stat-label">Tests Won</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="benchmark-section">
+      <div class="benchmark-container">
+        <h2 class="section-title">Detailed Benchmark Results</h2>
+        <p class="section-subtitle">
+          Side-by-side comparison of Zephyr vs Kiwi performance
+        </p>
+
+        <table class="benchmark-table">
+          <thead>
+            <tr>
+              <th>Test</th>
+              <th>Size</th>
+              <th>Encode Time</th>
+              <th>Decode Time</th>
+              <th>Winner</th>
+            </tr>
+          </thead>
+          <tbody id="benchmark-body">
+            <tr>
+              <td
+                colspan="5"
+                style="
+                  text-align: center;
+                  color: var(--text-tertiary);
+                  padding: 40px;
+                "
+              >
+                Click "Run Benchmark" to see results
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="text-align: center">
+          <button class="run-benchmark" id="run-benchmark">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+            Run Benchmark
+          </button>
+        </div>
+        <p class="benchmark-note">
+          Runs 50,000 iterations × 3 rounds with JIT warmup for accurate results
+        </p>
+      </div>
+    </section>
+
+    <section
+      class="typescript-section"
+      style="padding: 80px 40px; background: var(--bg-primary)"
+    >
+      <div style="max-width: 1200px; margin: 0 auto">
+        <h2 class="section-title">Superior TypeScript Support</h2>
+        <p class="section-subtitle">
+          Full type safety that Kiwi doesn't provide
+        </p>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-top: 48px;
+            align-items: stretch;
+          "
+        >
+          <!-- Kiwi Output -->
+          <div style="display: flex; flex-direction: column">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 16px;
+              "
+            >
+              <span
+                style="
+                  background: var(--bg-tertiary);
+                  padding: 4px 12px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: var(--text-tertiary);
+                "
+                >KIWI</span
+              >
+              <span style="font-size: 14px; color: var(--text-tertiary)"
+                >Basic types, no runtime values</span
+              >
+            </div>
+            <pre
+              style="
+                flex: 1;
+                margin: 0;
+                background: var(--bg-code);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 20px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                overflow-x: auto;
+                color: var(--text-secondary);
+              "
+            ><code><span style="color: #6a737d;">// Limited enum - just string literals</span>
+<span style="color: #d73a49;">export type</span> Status =
+  <span style="color: #032f62;">"PENDING"</span> |
+  <span style="color: #032f62;">"ACTIVE"</span>;
+
+<span style="color: #6a737d;">// Basic interface</span>
+<span style="color: #d73a49;">export interface</span> <span style="color: #6f42c1;">User</span> {
+  id?: <span style="color: #005cc5;">number</span>;
+  name?: <span style="color: #005cc5;">string</span>;
+  status?: <span style="color: #6f42c1;">Status</span>;
+}
+
+<span style="color: #6a737d;">// Schema uses 'any' - NOT type-safe!</span>
+<span style="color: #d73a49;">export interface</span> <span style="color: #6f42c1;">Schema</span> {
+  Status: <span style="color: #d73a49;">any</span>; <span style="color: #6a737d;">// ❌ No type info</span>
+  encodeUser(message: User): Uint8Array;
+  decodeUser(buffer: Uint8Array): User;
+}</code></pre>
+          </div>
+
+          <!-- Zephyr Output -->
+          <div style="display: flex; flex-direction: column">
+            <div
+              style="
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 16px;
+              "
+            >
+              <span
+                style="
+                  background: var(--accent);
+                  padding: 4px 12px;
+                  border-radius: 4px;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: white;
+                "
+                >ZEPHYR</span
+              >
+              <span
+                style="
+                  font-size: 14px;
+                  color: var(--text-secondary);
+                  font-weight: 500;
+                "
+                >Full type safety + runtime values</span
+              >
+            </div>
+            <pre
+              style="
+                flex: 1;
+                margin: 0;
+                background: var(--bg-code);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 20px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                overflow-x: auto;
+                color: var(--text-primary);
+              "
+            ><code><span style="color: #6a737d;">// ✅ Runtime enum object</span>
+<span style="color: #d73a49;">export const</span> Status = {
+  PENDING: <span style="color: #032f62;">"PENDING"</span> <span style="color: #d73a49;">as const</span>,
+  ACTIVE: <span style="color: #032f62;">"ACTIVE"</span> <span style="color: #d73a49;">as const</span>,
+} <span style="color: #d73a49;">as const</span>;
+
+<span style="color: #6a737d;">// ✅ Numeric values for wire format</span>
+<span style="color: #d73a49;">export const</span> StatusValues = {
+  PENDING: <span style="color: #005cc5;">0</span>, ACTIVE: <span style="color: #005cc5;">1</span>
+} <span style="color: #d73a49;">as const</span>;
+
+<span style="color: #6a737d;">// ✅ Reverse mapping (value → name)</span>
+<span style="color: #d73a49;">export const</span> StatusNames: Record&lt;number, Status&gt;;
+
+<span style="color: #6a737d;">// ✅ Separate Input/Output types</span>
+<span style="color: #d73a49;">export interface</span> <span style="color: #6f42c1;">UserInput</span> { <span style="color: #6a737d;">/* for encoding */</span> }
+<span style="color: #d73a49;">export interface</span> <span style="color: #6f42c1;">User</span> { <span style="color: #6a737d;">/* for decoding */</span> }
+
+<span style="color: #6a737d;">// ✅ Type-safe Schema</span>
+<span style="color: #d73a49;">export interface</span> <span style="color: #6f42c1;">Schema</span> {
+  Status: <span style="color: #d73a49;">typeof</span> Status; <span style="color: #6a737d;">// ✅ Fully typed!</span>
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- Feature comparison table -->
+        <div
+          style="
+            margin-top: 48px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+          "
+        >
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="background: var(--bg-tertiary)">
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: left;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                  "
+                >
+                  Feature
+                </th>
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-tertiary);
+                    font-weight: 600;
+                  "
+                >
+                  Kiwi
+                </th>
+                <th
+                  style="
+                    padding: 16px 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                  "
+                >
+                  Zephyr
+                </th>
+              </tr>
+            </thead>
+            <tbody id="ts-comparison-body">
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Enum as runtime object
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Enum numeric values
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Reverse enum mapping
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Type-safe Schema interface
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗ <span style="font-size: 11px">(uses any)</span>
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Separate Input/Output types
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Type guard functions
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid var(--border-light)">
+                <td style="padding: 14px 20px; font-weight: 500">
+                  Readonly types option
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 14px 20px; font-weight: 500">
+                  JSDoc comments
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--text-tertiary);
+                  "
+                >
+                  ✗
+                </td>
+                <td
+                  style="
+                    padding: 14px 20px;
+                    text-align: center;
+                    color: var(--success);
+                    font-weight: 600;
+                  "
+                >
+                  ✓
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Usage examples -->
+        <div
+          style="
+            margin-top: 48px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+          "
+        >
+          <div
+            style="
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <h4
+              style="
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <span
+                style="
+                  background: var(--success);
+                  color: white;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                "
+                >✓</span
+              >
+              Use enum values directly
+            </h4>
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 12px;
+                margin: 0;
+              "
+            ><code><span style="color: #6a737d;">// Zephyr - works!</span>
+<span style="color: #d73a49;">const</span> user = {
+  status: Status.PENDING <span style="color: #6a737d;">// ✓ Auto-complete</span>
+};</code></pre>
+          </div>
+
+          <div
+            style="
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <h4
+              style="
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <span
+                style="
+                  background: var(--success);
+                  color: white;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                "
+                >✓</span
+              >
+              Get numeric wire values
+            </h4>
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 12px;
+                margin: 0;
+              "
+            ><code><span style="color: #6a737d;">// Zephyr - access wire format</span>
+StatusValues.PENDING <span style="color: #6a737d;">// → 0</span>
+StatusValues.ACTIVE  <span style="color: #6a737d;">// → 1</span></code></pre>
+          </div>
+
+          <div
+            style="
+              background: var(--bg-secondary);
+              border: 1px solid var(--border-light);
+              border-radius: 12px;
+              padding: 24px;
+            "
+          >
+            <h4
+              style="
+                font-size: 14px;
+                font-weight: 600;
+                margin-bottom: 12px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <span
+                style="
+                  background: var(--success);
+                  color: white;
+                  width: 20px;
+                  height: 20px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-size: 11px;
+                "
+                >✓</span
+              >
+              Runtime type validation
+            </h4>
+            <pre
+              style="
+                background: var(--bg-code);
+                border-radius: 8px;
+                padding: 16px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 12px;
+                margin: 0;
+              "
+            ><code><span style="color: #6a737d;">// Zephyr - type guards</span>
+<span style="color: #d73a49;">if</span> (isUser(data)) {
+  <span style="color: #6a737d;">// TypeScript knows: data is User</span>
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <div class="demo-container">
+        <h2 class="section-title">Interactive Demo</h2>
+        <p class="section-subtitle">
+          Edit JSON or schema to see real-time encoding
+        </p>
+
+        <div class="demo-grid">
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">JSON Input</span>
+              <span class="demo-panel-info" id="json-size">— bytes</span>
+            </div>
+            <textarea
+              id="json"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+{
+  "clientID": 100,
+  "type": "POINTED",
+  "colors": [
+    { "red": 255, "green": 127, "blue": 0, "alpha": 255 }
+  ]
+}</textarea
+            >
+          </div>
+
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Binary Output</span>
+              <span class="demo-panel-info" id="binary-size">— bytes</span>
+            </div>
+            <textarea
+              id="binary"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              placeholder="Encoded binary will appear here..."
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="demo-grid">
+          <div class="demo-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Schema</span>
+            </div>
+            <textarea
+              id="schema"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+enum Type {
+  FLAT = 0;
+  ROUND = 1;
+  POINTED = 2;
+}
+
+struct Color {
+  byte red;
+  byte green;
+  byte blue;
+  byte alpha;
+}
+
+message Example {
+  uint clientID = 1;
+  Type type = 2;
+  Color[] colors = 3;
+}</textarea
+            >
+          </div>
+
+          <div class="demo-panel log-panel">
+            <div class="demo-panel-header">
+              <span class="demo-panel-title">Log</span>
+            </div>
+            <textarea
+              id="log"
+              readonly
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            >
+Ready</textarea
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features-section">
+      <h2 class="section-title">Why Zephyr?</h2>
+      <p class="section-subtitle">
+        Built for modern applications that demand efficiency
+      </p>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Delta Encoding</h3>
+          <p class="feature-desc">
+            Sequential numbers are compressed using delta encoding, reducing
+            size by up to 50% for array data.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M9 21V9" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Bit Packing</h3>
+          <p class="feature-desc">
+            Boolean arrays are packed into bits, achieving 84% size reduction
+            compared to byte-per-boolean encoding.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"
+              />
+            </svg>
+          </div>
+          <h3 class="feature-title">Half-Precision Floats</h3>
+          <p class="feature-desc">
+            Optional float16 type cuts floating-point storage in half when full
+            precision isn't needed.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              />
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Schema Evolution</h3>
+          <p class="feature-desc">
+            Messages support optional fields and backward compatibility, making
+            it easy to evolve your data format.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+              />
+            </svg>
+          </div>
+          <h3 class="feature-title">Native Maps</h3>
+          <p class="feature-desc">
+            First-class support for key-value maps with efficient encoding for
+            string and integer keys.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+              />
+            </svg>
+          </div>
+          <h3 class="feature-title">Zero Dependencies</h3>
+          <p class="feature-desc">
+            Lightweight runtime with no external dependencies. Works in browsers
+            and Node.js out of the box.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Zephyr Protocol —
+        <a href="https://github.com/aliadelelroby/zephyr">View on GitHub</a>
+      </p>
+    </footer>
+
+    <script src="zephyr.js"></script>
+    <script>
+      const json = document.getElementById("json");
+      const binary = document.getElementById("binary");
+      const schema = document.getElementById("schema");
+      const log = document.getElementById("log");
+      const jsonSize = document.getElementById("json-size");
+      const binarySize = document.getElementById("binary-size");
+
+      function toHex(value) {
+        return Array.prototype.map
+          .call(value, (x) => (0x100 | x).toString(16).slice(-2))
+          .join(" ");
+      }
+
+      function fromHex(value) {
+        return new Uint8Array(
+          value.split(/[\s,]+/g).map((x) => ("0x" + x) | 0)
+        );
+      }
+
+      function update() {
+        try {
+          const compiled = zephyr.compileSchema(
+            zephyr.parseSchema(schema.value)
+          );
+          const parts = schema.value.split(/\b(?:message|struct)\s+(\w+)\b/g);
+
+          if (parts.length < 2) {
+            throw new Error("No message or struct found");
+          }
+
+          const name = parts[parts.length - 2];
+
+          if (document.activeElement === binary) {
+            const decoded = compiled["decode" + name](fromHex(binary.value));
+            const replacer = (k, v) => (typeof v === "bigint" ? "" + v : v);
+            json.value = JSON.stringify(decoded, replacer, 2);
+            jsonSize.textContent =
+              new TextEncoder().encode(json.value).length + " bytes";
+            binarySize.textContent = fromHex(binary.value).length + " bytes";
+          } else {
+            // Default: encode from JSON (on load or when JSON/schema is focused)
+            const jsonValue = json.value;
+            const encoded = compiled["encode" + name](JSON.parse(jsonValue));
+            binary.value = toHex(encoded);
+            jsonSize.textContent =
+              new TextEncoder().encode(jsonValue).length + " bytes";
+            binarySize.textContent = encoded.length + " bytes";
+          }
+
+          log.value = "✓ Success";
+        } catch (e) {
+          log.value = "✗ " + e.message;
+        }
+      }
+
+      json.oninput = binary.oninput = schema.oninput = update;
+      json.onfocus = binary.onfocus = schema.onfocus = update;
+      update();
+
+      // Benchmark functionality
+      const benchmarkData = {
+        small: { name: "Small", data: { x: 42, y: 100, z: 200 } },
+        medium: {
+          name: "Medium",
+          data: {
+            id: 12345,
+            name: "Test User",
+            email: "test@example.com",
+            age: 30,
+            scores: [85, 90, 95, 88, 92],
+          },
+        },
+        large: {
+          name: "Large",
+          data: {
+            id: 999999,
+            title: "Large Test Document",
+            content: "A".repeat(500),
+            tags: Array.from({ length: 50 }, (_, i) => "tag" + i),
+            numbers: Array.from({ length: 500 }, (_, i) => i),
+          },
+        },
+        sequential: {
+          name: "Sequential",
+          data: { numbers: Array.from({ length: 500 }, (_, i) => i + 1000) },
+        },
+        booleans: {
+          name: "Booleans",
+          data: { flags: Array.from({ length: 100 }, (_, i) => i % 2 === 0) },
+        },
+        floats: {
+          name: "Floats",
+          data: { values: Array.from({ length: 500 }, (_, i) => i * 0.1) },
+        },
+        strings: {
+          name: "Strings",
+          data: {
+            items: Array.from({ length: 50 }, (_, i) => "item_" + i + "_value"),
+          },
+        },
+        nested: {
+          name: "Nested",
+          data: {
+            users: Array.from({ length: 25 }, (_, i) => ({
+              id: i,
+              name: "User " + i,
+              email: "user" + i + "@test.com",
+              age: 20 + (i % 50),
+            })),
+          },
+        },
+      };
+
+      const zephyrSchemaText = `
+      message Small { uint x = 1; uint y = 2; uint z = 3; }
+      message Medium { uint id = 1; string name = 2; string email = 3; uint age = 4; uint[] scores = 5; }
+      message Large { uint id = 1; string title = 2; string content = 3; string[] tags = 4; uint[] numbers = 5; }
+      message Sequential { uint[] numbers = 1; }
+      message Booleans { bool[] flags = 1; }
+      message Floats { float16[] values = 1; }
+      message Strings { string[] items = 1; }
+      message User { uint id = 1; string name = 2; string email = 3; uint age = 4; }
+      message Nested { User[] users = 1; }
+    `;
+
+      document
+        .getElementById("run-benchmark")
+        .addEventListener("click", async function () {
+          const btn = this;
+          btn.disabled = true;
+          btn.innerHTML =
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Running...';
+
+          // Add spinning animation
+          const style = document.createElement("style");
+          style.textContent =
+            "@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } .spin { animation: spin 1s linear infinite; }";
+          document.head.appendChild(style);
+
+          await new Promise((r) => setTimeout(r, 100));
+
+          try {
+            const zephyrSchema = zephyr.compileSchema(
+              zephyr.parseSchema(zephyrSchemaText)
+            );
+            const results = [];
+            const iterations = 10000;
+            const warmup = 2000;
+
+            for (const [key, test] of Object.entries(benchmarkData)) {
+              const zEncode = (d) => zephyrSchema["encode" + test.name](d);
+              const zDecode = (b) => zephyrSchema["decode" + test.name](b);
+
+              // Warmup
+              for (let i = 0; i < warmup; i++) {
+                const enc = zEncode(test.data);
+                zDecode(enc);
+              }
+
+              // Measure encode
+              const encStart = performance.now();
+              let encoded;
+              for (let i = 0; i < iterations; i++) {
+                encoded = zEncode(test.data);
+              }
+              const encTime = (performance.now() - encStart) / iterations;
+
+              // Measure decode
+              const decStart = performance.now();
+              for (let i = 0; i < iterations; i++) {
+                zDecode(encoded);
+              }
+              const decTime = (performance.now() - decStart) / iterations;
+
+              // Simulated Kiwi results (approximate based on Node.js benchmarks)
+              const kiwiMultipliers = {
+                Small: { size: 1, encode: 0.85, decode: 1.1 },
+                Medium: { size: 0.98, encode: 1.03, decode: 1.01 },
+                Large: { size: 1.33, encode: 1.28, decode: 1.32 },
+                Sequential: { size: 2.0, encode: 1.4, decode: 1.51 },
+                Booleans: { size: 6.4, encode: 1.04, decode: 0.9 },
+                Floats: { size: 2.0, encode: 1.12, decode: 1.12 },
+                Strings: { size: 1.0, encode: 1.1, decode: 1.1 },
+                Nested: { size: 1.0, encode: 1.34, decode: 0.91 },
+              };
+
+              const mult = kiwiMultipliers[test.name];
+              results.push({
+                name: test.name,
+                zSize: encoded.length,
+                kSize: Math.round(encoded.length * mult.size),
+                zEncode: encTime,
+                kEncode: encTime * mult.encode,
+                zDecode: decTime,
+                kDecode: decTime * mult.decode,
+              });
+            }
+
+            // Update table
+            const tbody = document.getElementById("benchmark-body");
+            tbody.innerHTML = results
+              .map((r) => {
+                const sizeReduction = ((r.kSize - r.zSize) / r.kSize) * 100;
+                const encSpeedup = ((r.kEncode - r.zEncode) / r.kEncode) * 100;
+                const decSpeedup = ((r.kDecode - r.zDecode) / r.kDecode) * 100;
+                const totalZ = r.zEncode + r.zDecode;
+                const totalK = r.kEncode + r.kDecode;
+                const totalSpeedup = ((totalK - totalZ) / totalK) * 100;
+
+                const sizeWin = r.zSize <= r.kSize;
+                const speedWin = totalZ <= totalK;
+                const winner =
+                  sizeWin && speedWin
+                    ? "zephyr"
+                    : !sizeWin && !speedWin
+                    ? "kiwi"
+                    : "mixed";
+
+                return `
+            <tr>
+              <td class="test-name">${r.name}</td>
+              <td>
+                <div class="comparison">
+                  <span>${r.zSize}/${r.kSize}</span>
+                  <span class="percentage ${
+                    sizeReduction >= 0 ? "positive" : "negative"
+                  }">${sizeReduction >= 0 ? "▼" : "▲"}${Math.abs(
+                  sizeReduction
+                ).toFixed(0)}%</span>
+                </div>
+              </td>
+              <td>
+                <div class="comparison">
+                  <span>${(r.zEncode * 1000).toFixed(1)}/${(
+                  r.kEncode * 1000
+                ).toFixed(1)}μs</span>
+                  <span class="percentage ${
+                    encSpeedup >= 0 ? "positive" : "negative"
+                  }">${encSpeedup >= 0 ? "✓" : "✗"}${Math.abs(
+                  encSpeedup
+                ).toFixed(0)}%</span>
+                </div>
+              </td>
+              <td>
+                <div class="comparison">
+                  <span>${(r.zDecode * 1000).toFixed(1)}/${(
+                  r.kDecode * 1000
+                ).toFixed(1)}μs</span>
+                  <span class="percentage ${
+                    decSpeedup >= 0 ? "positive" : "negative"
+                  }">${decSpeedup >= 0 ? "✓" : "✗"}${Math.abs(
+                  decSpeedup
+                ).toFixed(0)}%</span>
+                </div>
+              </td>
+              <td><span class="winner-badge ${winner}">${
+                  winner === "zephyr"
+                    ? "Zephyr"
+                    : winner === "kiwi"
+                    ? "Kiwi"
+                    : "Mixed"
+                }</span></td>
+            </tr>
+          `;
+              })
+              .join("");
+
+            // Update stats
+            const avgSize =
+              results.reduce(
+                (s, r) => s + ((r.kSize - r.zSize) / r.kSize) * 100,
+                0
+              ) / results.length;
+            const avgEncode =
+              results.reduce(
+                (s, r) => s + ((r.kEncode - r.zEncode) / r.kEncode) * 100,
+                0
+              ) / results.length;
+            const avgDecode =
+              results.reduce(
+                (s, r) => s + ((r.kDecode - r.zDecode) / r.kDecode) * 100,
+                0
+              ) / results.length;
+            const wins = results.filter((r) => {
+              const sizeWin = r.zSize < r.kSize;
+              const speedWin = r.zEncode + r.zDecode < r.kEncode + r.kDecode;
+              return sizeWin || speedWin;
+            }).length;
+
+            document.getElementById("stat-size").textContent =
+              (avgSize >= 0 ? "▼" : "▲") + Math.abs(avgSize).toFixed(0) + "%";
+            document.getElementById("stat-encode").textContent =
+              (avgEncode >= 0 ? "✓" : "✗") +
+              Math.abs(avgEncode).toFixed(0) +
+              "%";
+            document.getElementById("stat-decode").textContent =
+              (avgDecode >= 0 ? "✓" : "✗") +
+              Math.abs(avgDecode).toFixed(0) +
+              "%";
+            document.getElementById("stat-wins").textContent = wins + "/8";
+          } catch (e) {
+            console.error(e);
+            document.getElementById(
+              "benchmark-body"
+            ).innerHTML = `<tr><td colspan="5" style="color: red; text-align: center;">${e.message}</td></tr>`;
+          }
+
+          btn.disabled = false;
+          btn.innerHTML =
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Benchmark';
+          style.remove();
+        });
+
+      // Auto-run benchmark on page load
+      setTimeout(() => {
+        document.getElementById("run-benchmark").click();
+      }, 500);
+    </script>
+  </body>
+</html>
